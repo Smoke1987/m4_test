@@ -1,0 +1,11 @@
+<div class="wrapper">
+  <button mat-button (click)="onAddClicked($event)">
+    <mat-icon>add</mat-icon>
+    <span class="inline-flex">Добавить</span>
+  </button>
+  <input placeholder="Поиск" #searchInput />
+  <button mat-button (click)="onRefreshClicked($event)">
+    <mat-icon>refresh</mat-icon>
+    <span class="inline-flex">Обновить</span>
+  </button>
+</div>

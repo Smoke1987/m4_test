@@ -1,0 +1,53 @@
+<h1 mat-dialog-title>Hi {{data.user.name}}</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form">
+    <ng-container *ngFor="let field of fields">
+
+      <ng-container *ngIf="!isGroup(field)">
+        <mat-form-field appearance="fill">
+          <mat-label>{{field}}</mat-label>
+          <input matInput [formControlName]="field">
+          <mat-error *ngIf="form.get(field)?.touched && form.get(field)?.invalid">{{'Required'}}</mat-error>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="isGroup(field)">
+        <ng-container *ngTemplateOutlet="formGroupTemplate;context:{keys: getNestedGroupKeys(field), field, groupName: field}"></ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-template #formGroupTemplate let-groupName="groupName" let-fieldName="field" let-keys="keys" let-isNested=nested>
+      <div [formGroupName]="groupName">
+        <div class="group-header">{{groupName}}</div>
+        <ng-container *ngFor="let _nested of keys">
+          <ng-container *ngIf="!isGroup(fieldName + '.' + _nested)">
+            <mat-form-field appearance="fill">
+              <mat-label>{{_nested}}</mat-label>
+              <input matInput [formControlName]="isNested ? fieldName + '.' +_nested : _nested">
+              <mat-error *ngIf="form.get(groupName + '.' + _nested)?.touched && form.get(groupName + '.' + _nested)?.invalid">{{'Required'}}</mat-error>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="isGroup(fieldName + '.' + _nested)">
+            <!--ng-container *ngTemplateOutlet="formGroupTemplate;context:{keys: getNestedGroupKeys(_nested, fieldName), field: fieldName + '.' + _nested, groupName: fieldName, nested: true}"></ng-container-->
+            <!-- FIXME:: костыль -->
+            <div [formGroupName]="_nested">
+              <div class="group-header">{{_nested}}</div>
+              <ng-container *ngFor="let _nested2 of getNestedGroupKeys(_nested, fieldName)">
+                <mat-form-field appearance="fill">
+                  <mat-label>{{_nested2}}</mat-label>
+                  <input matInput [formControlName]="_nested2">
+                  <mat-error *ngIf="form.get(_nested + '.' + _nested2)?.touched && form.get(_nested + '.' + _nested2)?.invalid">{{'Required'}}</mat-error>
+                </mat-form-field>
+              </ng-container>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-template>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button (click)="onSubmit()">Ok</button>
+</div>
