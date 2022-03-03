@@ -1,0 +1,15 @@
+:host {
+  .main-content {
+    width: 100%;
+    .mat-table {
+      width: 100%;
+      .mat-cell {
+        white-space: pre-wrap;
+      }
+    }
+  }
+  .actions-wrapper {
+    display: inline-flex;
+    align-items: center;
+  }
+}
